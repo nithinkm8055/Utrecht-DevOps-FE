@@ -9,7 +9,7 @@ def call(Map<String, String> projectConfig) {
     Flow flow = new Flow(this, 'STPL_FE')
     def config = flow.initConfig(projectConfig)
 
-    flow.run(config) {
+    flow.run {
 
         Checkout.run(this, config)
         NGBuild.run(this, config)
