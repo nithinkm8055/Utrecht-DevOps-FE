@@ -2,10 +2,10 @@ package com.hcl.ing.stpl.fe
 
 import com.hcl.ing.stpl.buildingblock.BuildingBlock
 
-class NGSonarScan extends BuildingBlock implements Serializable{
+class NGSonarScan extends BuildingBlock implements Serializable {
 
     static def run(script, config) {
-        BuildingBlock bb = new MavenBuild(script)
+        BuildingBlock bb = new NGSonarScan(script)
         bb.initialize(config)
         bb.run()
 
@@ -20,12 +20,10 @@ class NGSonarScan extends BuildingBlock implements Serializable{
     def run() {
 
         script.stage("NG Sonar Scan") {
-
-            script.withDockerContainer(EXECUTOR_IMAGE) {
-                script.withCredentials([script.usernamePassword(credentialsId: 'sonarqube', passwordVariable: 'pass', usernameVariable: 'user')]) {
-                    script.sh "sonar-scanner -Dsonar.host.url=http://35.180.103.243:9000/ -Dsonar.login=$user -Dsonar.password=$pass"
+            script.withSonarQubeEnv(credentialsId: 'sonarqube-server') {
+                script.withDockerContainer(EXECUTOR_IMAGE) {
+                    script.sh "sonar-scanner"
                 }
-
             }
         }
 
